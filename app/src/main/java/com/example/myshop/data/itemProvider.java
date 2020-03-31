@@ -80,6 +80,7 @@ public class itemProvider extends ContentProvider {
         int matcher  = sUriMatcher.match(uri);
         switch (matcher){
             case ITEMS:
+                assert values != null;
                 return insertItem(uri,values);
             default:
                 throw new IllegalArgumentException("insertion is not supported for this "+ uri);
@@ -87,6 +88,31 @@ public class itemProvider extends ContentProvider {
     }
 
     private Uri insertItem(Uri uri, ContentValues values) {
+
+
+        String name = values.getAsString(itemEntry.COLUMN_ITEM_NAME);
+
+        if (name==null){
+            throw new IllegalArgumentException("item needs a name");
+        }
+
+        Integer price = values.getAsInteger(itemEntry.COLUMN_ITEM_PRICE);
+
+        if (price != null && price<0){
+            throw new IllegalArgumentException("item requires a valid price");
+        }
+
+        if (price == null){
+            throw new IllegalArgumentException("item must have a price");
+        }
+
+        Integer quantity = values.getAsInteger(itemEntry.COLUMN_ITEM_QUANTITY);
+
+        if (quantity != null && quantity<0){
+            throw new IllegalArgumentException("item must have a valid quantity");
+        }
+
+
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         long id = database.insert(itemEntry.TABLE_NAME,null,values);
@@ -100,11 +126,67 @@ public class itemProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        final int matcher = sUriMatcher.match(uri);
+
+        switch (matcher){
+            case ITEMS:
+                return database.delete(itemEntry.TABLE_NAME,selection,selectionArgs);
+            case ITEM_ID:
+
+                selection = itemEntry._ID + "=?";
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                return database.delete(itemEntry.TABLE_NAME,selection,selectionArgs);
+            default:
+                throw new IllegalArgumentException("Deletion is not supported for" + uri);
+        }
     }
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+       int matcher = sUriMatcher.match(uri);
+
+       switch (matcher){
+           case ITEMS:
+               assert values != null;
+               return updateItem(uri,values,selection,selectionArgs);
+           case ITEM_ID:
+
+               selection = itemEntry._ID + "=?";
+               selectionArgs = new String[] {String.valueOf(ContentUris.parseId(uri))};
+               assert values != null;
+               return updateItem(uri, values, selection, selectionArgs);
+           default:
+               throw new IllegalArgumentException("update is not supported for" + uri);
+       }
+    }
+
+    private int updateItem(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+
+        if (values.containsKey(itemEntry.COLUMN_ITEM_NAME)){
+            String name = values.getAsString(itemEntry.COLUMN_ITEM_NAME);
+                if (name == null){
+                    throw new IllegalArgumentException("item must have a name");
+                }
+        }
+
+        if (values.containsKey(itemEntry.COLUMN_ITEM_QUANTITY)){
+            Integer quantity = values.getAsInteger(itemEntry.COLUMN_ITEM_QUANTITY);
+            if (quantity != null && quantity<0) {
+                throw new IllegalArgumentException("quantity must be positive");
+            }
+        }
+
+        if (values.containsKey(itemEntry.COLUMN_ITEM_PRICE)){
+            Integer price = values.getAsInteger(itemEntry.COLUMN_ITEM_PRICE);
+            if (price == null){
+                throw new IllegalArgumentException("item must have a valid price");
+            }
+        }
+
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        return database.update(itemEntry.TABLE_NAME,values,selection,selectionArgs);
     }
 }
