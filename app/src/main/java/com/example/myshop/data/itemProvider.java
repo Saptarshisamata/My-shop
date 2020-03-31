@@ -7,6 +7,7 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -52,12 +53,12 @@ public class itemProvider extends ContentProvider {
         switch (match){
 
             case ITEMS :
-                cursor = database.query(itemEntry.TABLE_NAME,projection,null,null,null,null,null);
+                cursor = database.query(itemEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
                 break;
             case ITEM_ID:
                 selection = itemEntry._ID + "=?" ;
                 selectionArgs = new String[] {String.valueOf(ContentUris.parseId(uri))} ;
-                cursor = database.query(itemEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,null);
+                cursor = database.query(itemEntry.TABLE_NAME,projection,selection,selectionArgs,null,null,sortOrder);
                 break;
             default:
                 throw  new IllegalArgumentException("cannot query unknown uri" + uri) ;
@@ -75,7 +76,26 @@ public class itemProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        return null;
+
+        int matcher  = sUriMatcher.match(uri);
+        switch (matcher){
+            case ITEMS:
+                return insertItem(uri,values);
+            default:
+                throw new IllegalArgumentException("insertion is not supported for this "+ uri);
+        }
+    }
+
+    private Uri insertItem(Uri uri, ContentValues values) {
+        SQLiteDatabase database = dbHelper.getWritableDatabase();
+
+        long id = database.insert(itemEntry.TABLE_NAME,null,values);
+
+        if(id==-1){
+            Toast.makeText(getContext(),"insert failed for row"+uri,Toast.LENGTH_SHORT).show();
+        }
+
+        return ContentUris.withAppendedId(uri,id);
     }
 
     @Override
