@@ -17,7 +17,7 @@ public class shopDbHelper extends SQLiteOpenHelper {
 
     public static final int DATABASE_VERSION = 1 ;
 
-    public shopDbHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
+    public shopDbHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
