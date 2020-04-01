@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">My Shop</string>
+    <string name="delete_all">Delete All</string>
+    <string name="add_some_new_item">Add some new item</string>
+    <string name="shop_is_empty">Shop is empty</string>
 </resources>
