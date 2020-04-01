@@ -24,11 +24,11 @@ public class shopDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String SQL_CREATE_SHOP_TABLE = "CREATE TABLE " + itemEntry.TABLE_NAME + "("
-                                + itemEntry._ID + "INTEGER PRIMARY KEY AUTOINCREMENT,"
-                                + itemEntry.COLUMN_ITEM_NAME + "TEXT NOT NULL ,"
-                                + itemEntry.COLUMN_ITEM_PRICE + "INTEGER NOT NULL , "
-                                + itemEntry.COLUMN_ITEM_QUANTITY + "INTEGER NOT NULL DEFAULT 0 ,"
-                                + itemEntry.COLUMN_USER_REPORT + "TEXT ) ;";
+                                + itemEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+                                + itemEntry.COLUMN_ITEM_NAME + " TEXT NOT NULL ,"
+                                + itemEntry.COLUMN_ITEM_PRICE + " INTEGER NOT NULL , "
+                                + itemEntry.COLUMN_ITEM_QUANTITY + " INTEGER NOT NULL DEFAULT 0 ,"
+                                + itemEntry.COLUMN_USER_REPORT + " TEXT ) ;";
         db.execSQL(SQL_CREATE_SHOP_TABLE);
     }
 

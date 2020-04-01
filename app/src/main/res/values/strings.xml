@@ -11,4 +11,6 @@
     <string name="price_inr">Price(INR)</string>
     <string name="name">name</string>
     <string name="feedback">feedback</string>
+    <string name="delete">Delete</string>
+    <string name="done">done</string>
 </resources>
