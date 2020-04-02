@@ -27,6 +27,15 @@ public class detailsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
+        Intent intent = getIntent();
+        Uri currentUri = intent.getData();
+
+        if (currentUri == null){
+            setTitle("Add a Item");
+        }else {
+            setTitle("Edit Item");
+        }
+
         nameString = findViewById(R.id.name);
         priceString = findViewById(R.id.price);
         quantityString = findViewById(R.id.quantity);

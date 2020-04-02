@@ -1,15 +1,18 @@
 package com.example.myshop;
 
 import android.app.LoaderManager;
+import android.content.ContentUris;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -34,6 +37,18 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         itemList.setAdapter(mItemAdapter);
 
+        itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(MainActivity.this,detailsActivity.class);
+
+                Uri currentUri = ContentUris.withAppendedId(itemContract.itemEntry.CONTENT_URI,id);
+
+                intent.setData(currentUri);
+
+                startActivity(intent);
+            }
+        });
         FloatingActionButton addButton = findViewById(R.id.addItem);
         addButton.setOnClickListener(new View.OnClickListener() {
             @Override
