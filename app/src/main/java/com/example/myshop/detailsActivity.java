@@ -4,8 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
 
+import android.app.LoaderManager;
 import android.content.ContentValues;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,24 +20,28 @@ import android.widget.Toast;
 
 import com.example.myshop.data.itemContract;
 
-public class detailsActivity extends AppCompatActivity {
+public class detailsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    private static final int ITEM_LOADER = 0 ;
 
     EditText nameString;
     EditText priceString;
     EditText quantityString;
     EditText feedbackString;
+    Uri currentUri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
         Intent intent = getIntent();
-        Uri currentUri = intent.getData();
+        currentUri = intent.getData();
 
         if (currentUri == null){
             setTitle("Add a Item");
         }else {
             setTitle("Edit Item");
+            getLoaderManager().initLoader(ITEM_LOADER,null,this);
         }
 
         nameString = findViewById(R.id.name);
@@ -59,11 +67,16 @@ public class detailsActivity extends AppCompatActivity {
         switch (id){
             case R.id.done:
                 insertItem();
-                Intent intent = new Intent(detailsActivity.this,MainActivity.class);
-                startActivity(intent);
+                finish();
                 return true;
             case R.id.dlt_item:
-                // delete item
+                int rowsDeleted = getContentResolver().delete(currentUri,null,null);
+                if (rowsDeleted == 0){
+                    Toast.makeText(this,"error while delete",Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(this,"deleted",Toast.LENGTH_SHORT).show();
+                }
+                finish();
                 return true;
             case R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
@@ -94,8 +107,48 @@ public class detailsActivity extends AppCompatActivity {
         if (newUri == null){
             Toast.makeText(this,"error insert data",Toast.LENGTH_SHORT).show();
         }else{
-            Toast.makeText(this,"item inseted",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"item inserted",Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String[] projection = {
+                itemContract.itemEntry._ID,
+                itemContract.itemEntry.COLUMN_ITEM_NAME,
+                itemContract.itemEntry.COLUMN_ITEM_PRICE,
+                itemContract.itemEntry.COLUMN_ITEM_QUANTITY,
+                itemContract.itemEntry.COLUMN_USER_REPORT
+        };
+
+        return new CursorLoader(this,currentUri,projection,null,null,null);
+
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (data.moveToFirst()) {
+            String name = data.getString(data.getColumnIndex(itemContract.itemEntry.COLUMN_ITEM_NAME));
+            int sPrice = data.getInt(data.getColumnIndex(itemContract.itemEntry.COLUMN_ITEM_PRICE));
+            int sQuantity = data.getInt(data.getColumnIndex(itemContract.itemEntry.COLUMN_ITEM_QUANTITY));
+            String feedback = data.getString(data.getColumnIndex(itemContract.itemEntry.COLUMN_USER_REPORT));
+
+            String price = String.valueOf(sPrice);
+            String quantity = String.valueOf(sQuantity);
+
+            nameString.setText(name);
+            priceString.setText(price);
+            quantityString.setText(quantity);
+            feedbackString.setText(feedback);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        nameString.setText("");
+        priceString.setText("");
+        quantityString.setText("");
+        feedbackString.setText("");
     }
 }

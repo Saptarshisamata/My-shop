@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ListView itemList = findViewById(R.id.list);
+        ListView itemList =(ListView) findViewById(R.id.list);
         View view = findViewById(R.id.emptyView);
         itemList.setEmptyView(view);
         mItemAdapter = new itemAdapter(this,null,0);
@@ -41,11 +41,8 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(MainActivity.this,detailsActivity.class);
-
                 Uri currentUri = ContentUris.withAppendedId(itemContract.itemEntry.CONTENT_URI,id);
-
                 intent.setData(currentUri);
-
                 startActivity(intent);
             }
         });
