@@ -27,6 +27,7 @@
             tools:layout_editor_absoluteY="68dp" />
 
         <EditText
+            android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/name"
@@ -52,6 +53,7 @@
             android:textSize="24sp" />
 
         <EditText
+            android:id="@+id/price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/price_of_the_item"
@@ -78,6 +80,7 @@
             android:textSize="24sp" />
 
         <EditText
+            android:id="@+id/quantity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/no_of_item_in_stock"
@@ -105,6 +108,7 @@
             android:paddingEnd="8dp"
             />
         <EditText
+            android:id="@+id/feedback"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/feedback"

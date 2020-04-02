@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
+import com.example.myshop.data.itemContract;
+
 public class itemAdapter extends CursorAdapter {
 
     public itemAdapter(Context context, Cursor c, int flags) {
@@ -26,12 +28,13 @@ public class itemAdapter extends CursorAdapter {
         TextView tQuantity = view.findViewById(R.id.quantity);
         TextView tPrice = view.findViewById(R.id.price);
 
-        String name = cursor.getString(cursor.getColumnIndexOrThrow("COLUMN_ITEM_NAME"));
-        int quantity = cursor.getInt(cursor.getColumnIndexOrThrow("COLUMN_ITEM_QUANTITY"));
-        int price = cursor.getInt(cursor.getColumnIndexOrThrow("COLUMN_ITEM_PRICE"));
-
+        String name = cursor.getString(cursor.getColumnIndex(itemContract.itemEntry.COLUMN_ITEM_NAME));
+        int quantity = cursor.getInt(cursor.getColumnIndex(itemContract.itemEntry.COLUMN_ITEM_QUANTITY));
+        int price = cursor.getInt(cursor.getColumnIndex(itemContract.itemEntry.COLUMN_ITEM_PRICE));
+        String sQuantity = "Quantity:"+ quantity + " pics";
+        String sPrice = "Price:₹" + price;
         tName.setText(name);
-        tQuantity.setText(String.valueOf(quantity));
-        tPrice.setText(String.valueOf(price));
+        tQuantity.setText(sQuantity );
+        tPrice.setText( sPrice);
     }
 }

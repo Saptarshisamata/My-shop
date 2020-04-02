@@ -35,16 +35,16 @@
             android:textSize="24sp"
             android:layout_below="@+id/name"
             android:layout_toEndOf="@+id/price"
-            android:layout_marginStart="26dp"
+            android:layout_marginStart="12dp"
             />
 
                 <Button
                     android:id="@+id/sell"
-                    android:layout_width="75sp"
-                    android:layout_height="55sp"
+                    android:layout_width="50sp"
+                    android:layout_height="50sp"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="24dp"
+                    android:layout_marginEnd="8dp"
                     android:text="Sell"
                     android:textSize="20sp"
                     android:background="#3F6E0A"

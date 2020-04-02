@@ -12,6 +12,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.Objects;
+
 import static com.example.myshop.data.itemContract.CONTENT_AUTHORITY;
 import static com.example.myshop.data.itemContract.PATH_ITEMS;
 import static com.example.myshop.data.itemContract.itemEntry;
@@ -64,6 +66,7 @@ public class itemProvider extends ContentProvider {
                 throw  new IllegalArgumentException("cannot query unknown uri" + uri) ;
 
         }
+        cursor.setNotificationUri(getContext().getContentResolver(),uri);
         return cursor;
     }
 
@@ -129,7 +132,7 @@ public class itemProvider extends ContentProvider {
         if(id==-1){
             Toast.makeText(getContext(),"insert failed for row"+uri,Toast.LENGTH_SHORT).show();
         }
-
+        Objects.requireNonNull(getContext()).getContentResolver().notifyChange(uri,null);
         return ContentUris.withAppendedId(uri,id);
     }
 
@@ -138,15 +141,23 @@ public class itemProvider extends ContentProvider {
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
         final int matcher = sUriMatcher.match(uri);
-
+        int rowDeleted;
         switch (matcher){
             case ITEMS:
-                return database.delete(itemEntry.TABLE_NAME,selection,selectionArgs);
+                rowDeleted =  database.delete(itemEntry.TABLE_NAME,selection,selectionArgs);
+                if (rowDeleted != 0){
+                    Objects.requireNonNull(getContext()).getContentResolver().notifyChange(uri,null);
+                }
+                return rowDeleted;
             case ITEM_ID:
 
                 selection = itemEntry._ID + "=?";
                 selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
-                return database.delete(itemEntry.TABLE_NAME,selection,selectionArgs);
+                rowDeleted =  database.delete(itemEntry.TABLE_NAME,selection,selectionArgs);
+                if (rowDeleted != 0){
+                    Objects.requireNonNull(getContext()).getContentResolver().notifyChange(uri,null);
+                }
+                return rowDeleted;
             default:
                 throw new IllegalArgumentException("Deletion is not supported for" + uri);
         }
@@ -196,6 +207,11 @@ public class itemProvider extends ContentProvider {
 
         SQLiteDatabase database = dbHelper.getWritableDatabase();
 
-        return database.update(itemEntry.TABLE_NAME,values,selection,selectionArgs);
+        int rowUpdated =  database.update(itemEntry.TABLE_NAME,values,selection,selectionArgs);
+
+        if (rowUpdated != 0){
+            Objects.requireNonNull(getContext()).getContentResolver().notifyChange(uri,null);
+        }
+        return  rowUpdated;
     }
 }

@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         View view = findViewById(R.id.emptyView);
         itemList.setEmptyView(view);
         mItemAdapter = new itemAdapter(this,null,0);
+
         itemList.setAdapter(mItemAdapter);
 
         FloatingActionButton addButton = findViewById(R.id.addItem);
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         });
 
         getLoaderManager().initLoader(ITEM_LOADER,null,this);
+
 
     }
 
@@ -61,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         switch (id){
             case R.id.dlt :
-                // delete all data
+                getContentResolver().delete(itemContract.itemEntry.CONTENT_URI,null,null);
                 return true ;
             default:
                 throw new IndexOutOfBoundsException("not valid item selected");
