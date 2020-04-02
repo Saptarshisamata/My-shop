@@ -2,6 +2,7 @@ package com.example.myshop;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NavUtils;
 
 import android.content.ContentValues;
 import android.content.Intent;
@@ -55,6 +56,8 @@ public class detailsActivity extends AppCompatActivity {
             case R.id.dlt_item:
                 // delete item
                 return true;
+            case R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
             default:
                 return false;
         }
