@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         getLoaderManager().initLoader(ITEM_LOADER,null,this);
 
-
     }
 
     @Override

@@ -37,8 +37,17 @@
             android:layout_toEndOf="@+id/price"
             android:layout_marginStart="12dp"
             />
-
-
+         <Button
+             android:id="@+id/sale"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="sale"
+             android:layout_alignParentEnd="true"
+             android:layout_marginTop="8dp"
+             android:layout_marginEnd="4dp"
+             android:focusable="false"
+             android:focusableInTouchMode="false"
+             />
 
         </RelativeLayout>
 

@@ -12,6 +12,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -66,7 +67,7 @@ public class detailsActivity extends AppCompatActivity implements LoaderManager.
         int id = item.getItemId();
         switch (id){
             case R.id.done:
-                insertItem();
+                saveItem();
                 finish();
                 return true;
             case R.id.dlt_item:
@@ -85,12 +86,19 @@ public class detailsActivity extends AppCompatActivity implements LoaderManager.
         }
     }
 
-    private void insertItem(){
+    private void saveItem(){
 
         String name = nameString.getText().toString().trim();
         String sPrice = priceString.getText().toString().trim();
         String sQuantity = quantityString.getText().toString().trim();
         String feedback = feedbackString.getText().toString().trim();
+
+        if (currentUri == null && TextUtils.isEmpty(name) && TextUtils.isEmpty(sPrice) && TextUtils.isEmpty(sQuantity)){
+            return;
+        }
+        if (TextUtils.isEmpty(feedback)){
+            feedback = "" ;
+        }
 
         int price = Integer.parseInt(sPrice);
         int quantity = Integer.parseInt(sQuantity);
@@ -101,15 +109,23 @@ public class detailsActivity extends AppCompatActivity implements LoaderManager.
         values.put(itemContract.itemEntry.COLUMN_ITEM_PRICE,price);
         values.put(itemContract.itemEntry.COLUMN_ITEM_QUANTITY,quantity);
         values.put(itemContract.itemEntry.COLUMN_USER_REPORT,feedback);
+        if (currentUri == null) {
+            Uri newUri = getContentResolver().insert(itemContract.itemEntry.CONTENT_URI, values);
 
-        Uri newUri = getContentResolver().insert(itemContract.itemEntry.CONTENT_URI,values);
-
-        if (newUri == null){
-            Toast.makeText(this,"error insert data",Toast.LENGTH_SHORT).show();
+            if (newUri == null) {
+                Toast.makeText(this, "error insert data", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "item inserted", Toast.LENGTH_SHORT).show();
+            }
         }else{
-            Toast.makeText(this,"item inserted",Toast.LENGTH_SHORT).show();
-        }
+            int rowEffected = getContentResolver().update(currentUri,values,null,null);
 
+            if (rowEffected == 0){
+                Toast.makeText(this,"Item updated successfully",Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(this,"error happened during upload",Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @Override
