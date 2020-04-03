@@ -21,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -36,6 +37,7 @@ public class detailsActivity extends AppCompatActivity implements LoaderManager.
     EditText priceString;
     EditText quantityString;
     EditText feedbackString;
+    Button order ;
     Uri currentUri;
 
     @SuppressLint("ClickableViewAccessibility")
@@ -54,16 +56,18 @@ public class detailsActivity extends AppCompatActivity implements LoaderManager.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         currentUri = intent.getData();
 
         if (currentUri == null){
             setTitle("Add a Item");
+
+            invalidateOptionsMenu();
         }else {
             setTitle("Edit Item");
             getLoaderManager().initLoader(ITEM_LOADER,null,this);
         }
-
+        order = findViewById(R.id.order);
         nameString = findViewById(R.id.name);
         priceString = findViewById(R.id.price);
         quantityString = findViewById(R.id.quantity);
@@ -74,6 +78,14 @@ public class detailsActivity extends AppCompatActivity implements LoaderManager.
         quantityString.setOnTouchListener(listener);
         feedbackString.setOnTouchListener(listener);
 
+        order.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(Intent.ACTION_DIAL);
+                intent1.setData(Uri.parse("tel:"));
+                startActivity(intent1);
+            }
+        });
 
     }
 
@@ -116,6 +128,17 @@ public class detailsActivity extends AppCompatActivity implements LoaderManager.
         menuInflater.inflate(R.menu.detailmenu,menu);
         return super.onCreateOptionsMenu(menu);
     }
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        super.onPrepareOptionsMenu(menu);
+
+        if (currentUri == null){
+            MenuItem item = menu.findItem(R.id.dlt_item);
+            item.setVisible(false);
+        }
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -125,7 +148,6 @@ public class detailsActivity extends AppCompatActivity implements LoaderManager.
         switch (id){
             case R.id.done:
                 saveItem();
-                finish();
                 return true;
             case R.id.dlt_item:
                 int rowsDeleted = getContentResolver().delete(currentUri,null,null);
@@ -167,6 +189,10 @@ public class detailsActivity extends AppCompatActivity implements LoaderManager.
         if (currentUri == null && TextUtils.isEmpty(name) && TextUtils.isEmpty(sPrice) && TextUtils.isEmpty(sQuantity)){
             return;
         }
+        if (TextUtils.isEmpty(name) || TextUtils.isEmpty(sPrice) || TextUtils.isEmpty(sQuantity)){
+            Toast.makeText(this,"Enter data properly",Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (TextUtils.isEmpty(feedback)){
             feedback = "" ;
         }
@@ -182,12 +208,12 @@ public class detailsActivity extends AppCompatActivity implements LoaderManager.
         values.put(itemContract.itemEntry.COLUMN_USER_REPORT,feedback);
         if (currentUri == null) {
             Uri newUri = getContentResolver().insert(itemContract.itemEntry.CONTENT_URI, values);
-
             if (newUri == null) {
                 Toast.makeText(this, "error insert data", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "item inserted", Toast.LENGTH_SHORT).show();
             }
+            finish();
         }else{
             int rowEffected = getContentResolver().update(currentUri,values,null,null);
 
@@ -196,6 +222,7 @@ public class detailsActivity extends AppCompatActivity implements LoaderManager.
             }else{
                 Toast.makeText(this,"error happened during upload",Toast.LENGTH_SHORT).show();
             }
+            finish();
         }
     }
 
