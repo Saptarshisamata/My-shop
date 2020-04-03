@@ -1,12 +1,15 @@
 package com.example.myshop;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
 
+import android.annotation.SuppressLint;
 import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -16,6 +19,8 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -25,11 +30,25 @@ public class detailsActivity extends AppCompatActivity implements LoaderManager.
 
     private static final int ITEM_LOADER = 0 ;
 
+    private boolean itemChanged = false ;
+
     EditText nameString;
     EditText priceString;
     EditText quantityString;
     EditText feedbackString;
     Uri currentUri;
+
+    @SuppressLint("ClickableViewAccessibility")
+    private View.OnTouchListener listener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            itemChanged = true ;
+            return false;
+        }
+    };
+
+
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,8 +69,46 @@ public class detailsActivity extends AppCompatActivity implements LoaderManager.
         quantityString = findViewById(R.id.quantity);
         feedbackString = findViewById(R.id.feedback);
 
+        nameString.setOnTouchListener(listener);
+        priceString.setOnTouchListener(listener);
+        quantityString.setOnTouchListener(listener);
+        feedbackString.setOnTouchListener(listener);
+
+
     }
 
+
+
+    private void showUnsavedChangedDialog(DialogInterface.OnClickListener discardButtonListener){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Discard your changes and quit editing");
+        builder.setPositiveButton("DISCARD",discardButtonListener);
+        builder.setNegativeButton("KEEP EDITING", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (dialog != null){
+                    dialog.dismiss();
+                }
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(!itemChanged) {
+            super.onBackPressed();
+            return;
+        }
+        DialogInterface.OnClickListener discardButtonListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        };
+        showUnsavedChangedDialog(discardButtonListener);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -79,8 +136,22 @@ public class detailsActivity extends AppCompatActivity implements LoaderManager.
                 }
                 finish();
                 return true;
-            case R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+            case android.R.id.home:
+                if (!itemChanged){
+                    //Toast.makeText(this,"test",Toast.LENGTH_SHORT).show();
+                    NavUtils.navigateUpFromSameTask(this);
+                    return true;
+                }
+                //Toast.makeText(this,"test",Toast.LENGTH_SHORT).show();
+                DialogInterface.OnClickListener discardButtonListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        NavUtils.navigateUpFromSameTask(detailsActivity.this);
+                    }
+                };
+                showUnsavedChangedDialog(discardButtonListener);
+                return true;
+
             default:
                 return false;
         }

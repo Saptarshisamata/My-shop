@@ -58,7 +58,6 @@ public class itemAdapter extends CursorAdapter {
                 }else {
                     Toast.makeText(context,"You have no item for sell",Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
     }
