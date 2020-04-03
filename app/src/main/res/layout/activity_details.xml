@@ -81,12 +81,29 @@
 
         <EditText
             android:id="@+id/quantity"
-            android:layout_width="match_parent"
+            android:layout_width="95dp"
             android:layout_height="wrap_content"
-            android:hint="@string/no_of_item_in_stock"
-            android:textSize="24sp"
             android:autofillHints="quantity"
+            android:hint="@string/no_of_item_in_stock"
             android:inputType="number"
+            android:textSize="24sp" />
+        <Button
+            android:id="@+id/sAdd"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="4dp"
+            android:text="@string/plus"
+            android:textSize="30sp"
+            android:textAlignment="center"
+            />
+        <Button
+            android:id="@+id/sMinus"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="4dp"
+            android:text="@string/minus"
+            android:textSize="30sp"
+            android:textAlignment="center"
             />
 
     </LinearLayout>

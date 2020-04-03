@@ -14,4 +14,6 @@
     <string name="delete">Delete</string>
     <string name="done">done</string>
     <string name="order">Order</string>
+    <string name="plus">+</string>
+    <string name="minus">-</string>
 </resources>
