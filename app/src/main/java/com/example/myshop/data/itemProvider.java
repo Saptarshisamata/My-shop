@@ -66,7 +66,7 @@ public class itemProvider extends ContentProvider {
                 throw  new IllegalArgumentException("cannot query unknown uri" + uri) ;
 
         }
-        cursor.setNotificationUri(getContext().getContentResolver(),uri);
+        cursor.setNotificationUri(Objects.requireNonNull(getContext()).getContentResolver(),uri);
         return cursor;
     }
 

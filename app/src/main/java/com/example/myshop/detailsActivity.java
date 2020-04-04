@@ -248,9 +248,9 @@ public class detailsActivity extends AppCompatActivity implements LoaderManager.
             int rowEffected = getContentResolver().update(currentUri,values,null,null);
 
             if (rowEffected == 0){
-                Toast.makeText(this,"Item updated successfully",Toast.LENGTH_SHORT).show();
-            }else{
                 Toast.makeText(this,"error happened during upload",Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(this,"Item updated successfully",Toast.LENGTH_SHORT).show();
             }
             finish();
         }
