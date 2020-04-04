@@ -60,7 +60,7 @@ public class detailsActivity extends AppCompatActivity implements LoaderManager.
 
         addStock = findViewById(R.id.sAdd);
         minusStock = findViewById(R.id.sMinus);
-
+        order = findViewById(R.id.order);
         final Intent intent = getIntent();
         currentUri = intent.getData();
 
@@ -70,11 +70,12 @@ public class detailsActivity extends AppCompatActivity implements LoaderManager.
             invalidateOptionsMenu();
             addStock.setVisibility(View.INVISIBLE);
             minusStock.setVisibility(View.INVISIBLE);
+            order.setVisibility(View.INVISIBLE);
         }else {
             setTitle("Edit Item");
             getLoaderManager().initLoader(ITEM_LOADER,null,this);
         }
-        order = findViewById(R.id.order);
+
         nameString = findViewById(R.id.name);
         priceString = findViewById(R.id.price);
         quantityString = findViewById(R.id.quantity);
