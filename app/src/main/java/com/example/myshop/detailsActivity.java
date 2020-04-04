@@ -38,6 +38,8 @@ public class detailsActivity extends AppCompatActivity implements LoaderManager.
     EditText quantityString;
     EditText feedbackString;
     Button order ;
+    Button addStock;
+    Button minusStock;
     Uri currentUri;
 
     @SuppressLint("ClickableViewAccessibility")
@@ -56,6 +58,9 @@ public class detailsActivity extends AppCompatActivity implements LoaderManager.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
+        addStock = findViewById(R.id.sAdd);
+        minusStock = findViewById(R.id.sMinus);
+
         final Intent intent = getIntent();
         currentUri = intent.getData();
 
@@ -63,6 +68,8 @@ public class detailsActivity extends AppCompatActivity implements LoaderManager.
             setTitle("Add a Item");
 
             invalidateOptionsMenu();
+            addStock.setVisibility(View.INVISIBLE);
+            minusStock.setVisibility(View.INVISIBLE);
         }else {
             setTitle("Edit Item");
             getLoaderManager().initLoader(ITEM_LOADER,null,this);
@@ -87,6 +94,27 @@ public class detailsActivity extends AppCompatActivity implements LoaderManager.
             }
         });
 
+        addStock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int q = Integer.parseInt(quantityString.getText().toString()) + 1;
+                quantityString.setText(String.valueOf(q));
+                ContentValues values = new ContentValues();
+                values.put(itemContract.itemEntry.COLUMN_ITEM_QUANTITY, q);
+                getContentResolver().update(currentUri, values, null, null);
+            }
+        });
+
+        minusStock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int q = Integer.parseInt(quantityString.getText().toString()) - 1;
+                quantityString.setText(String.valueOf(q));
+                ContentValues values = new ContentValues();
+                values.put(itemContract.itemEntry.COLUMN_ITEM_QUANTITY, q);
+                getContentResolver().update(currentUri, values, null, null);
+            }
+        });
     }
 
 
