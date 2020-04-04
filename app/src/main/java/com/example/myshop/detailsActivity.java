@@ -215,6 +215,7 @@ public class detailsActivity extends AppCompatActivity implements LoaderManager.
         String feedback = feedbackString.getText().toString().trim();
 
         if (currentUri == null && TextUtils.isEmpty(name) && TextUtils.isEmpty(sPrice) && TextUtils.isEmpty(sQuantity)){
+            finish();
             return;
         }
         if (TextUtils.isEmpty(name) || TextUtils.isEmpty(sPrice) || TextUtils.isEmpty(sQuantity)){
