@@ -207,7 +207,7 @@ public class detailsActivity extends AppCompatActivity implements LoaderManager.
                 return false;
         }
     }
-
+    //method for save
     private void saveItem(){
 
         String name = nameString.getText().toString().trim();
