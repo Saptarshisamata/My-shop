@@ -168,7 +168,7 @@ public class detailsActivity extends AppCompatActivity implements LoaderManager.
         }
         return true;
     }
-
+    // method for menu actions
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         super.onOptionsItemSelected(item);
